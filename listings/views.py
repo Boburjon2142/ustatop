@@ -191,6 +191,7 @@ def request_approval(request, pk):
     listing.status = Listing.Status.PENDING
     listing.is_public = False
     listing.rejection_reason = ''
+    listing.approved_at = None
     listing.save()
 
     ChatThread.objects.get_or_create(listing=listing, provider=listing.provider)

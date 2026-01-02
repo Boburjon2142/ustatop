@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 
 from listings.models import Listing
 from providers.models import Provider
@@ -53,6 +54,7 @@ def listing_review(request, pk):
             listing.status = Listing.Status.APPROVED
             listing.is_public = True
             listing.rejection_reason = ''
+            listing.approved_at = timezone.now()
             listing.save()
             messages.success(request, 'E’lon tasdiqlandi.')
             return redirect('dashboard:pending_listings')
@@ -64,6 +66,7 @@ def listing_review(request, pk):
             listing.status = Listing.Status.REJECTED
             listing.is_public = False
             listing.rejection_reason = rejection_reason
+            listing.approved_at = None
             listing.save()
             messages.success(request, 'E’lon rad etildi.')
             return redirect('dashboard:pending_listings')

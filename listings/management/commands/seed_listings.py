@@ -2,6 +2,7 @@ import random
 
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from listings.models import Listing
 from providers.models import Provider
@@ -72,6 +73,7 @@ class Command(BaseCommand):
                 price_from=50000 + (i * 10000),
                 status=Listing.Status.APPROVED,
                 is_public=True,
+                approved_at=timezone.now(),
             )
 
         self.stdout.write(self.style.SUCCESS(f'Seeded {to_create} listings.'))

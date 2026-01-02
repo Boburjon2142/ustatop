@@ -32,6 +32,11 @@
             </td>
             <td>
               <a class="btn btn-sm btn-outline-primary" href="{% url 'listings:edit' listing.pk %}">Tahrirlash</a>
+              {% with thread=listing.chatthread_set.first %}
+                {% if thread %}
+                  <a class="btn btn-sm btn-outline-secondary" href="{% url 'chat:thread_detail' thread.pk %}">Chat</a>
+                {% endif %}
+              {% endwith %}
               {% if listing.status == 'DRAFT' or listing.status == 'REJECTED' %}
                 <a class="btn btn-sm btn-success" href="{% url 'listings:request_approval' listing.pk %}">Tasdiq so‘rash</a>
               {% endif %}

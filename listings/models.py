@@ -28,6 +28,7 @@ class Listing(models.Model):
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
     rejection_reason = models.TextField(blank=True)
     is_public = models.BooleanField(default=False)
+    approved_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
