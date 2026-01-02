@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Usta kabineti - Ustatop{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 fw-bold mb-0">Usta kabineti</h1>
+  <a class="btn btn-primary" href="{% url 'listings:create' %}">E’lon yaratish</a>
+</div>
+<div class="alert alert-light border d-flex justify-content-between align-items-center">
+  <div class="fw-semibold">Bepul e’lonlar: {{ provider.free_listing_credits }}/3</div>
+  <small class="text-muted">Har tasdiqlangan e’lon 1 kredit sarflaydi.</small>
+</div>
+
+<div class="card">
+  <div class="card-header bg-white">
+    Mening e’lonlarim
+  </div>
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Sarlavha</th>
+          <th>Status</th>
+          <th>Amallar</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for listing in listings %}
+          <tr>
+            <td>{{ listing.title }}</td>
+            <td>
+              <span class="badge bg-secondary">{{ listing.get_status_display }}</span>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'listings:edit' listing.pk %}">Tahrirlash</a>
+              {% if listing.status == 'DRAFT' or listing.status == 'REJECTED' %}
+                <a class="btn btn-sm btn-success" href="{% url 'listings:request_approval' listing.pk %}">Tasdiq so‘rash</a>
+              {% endif %}
+              {% if listing.status == 'REJECTED' %}
+                <span class="text-muted small">Sabab: {{ listing.rejection_reason }}</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="text-muted">E’lonlar yo‘q.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

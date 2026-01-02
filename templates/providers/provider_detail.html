@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}{{ provider.user.profile.full_name }} - Ustatop{% endblock %}
+{% block content %}
+<div class="d-flex align-items-center gap-3 mb-4">
+  <div class="avatar-circle">{{ provider.user.username|slice:":1" }}</div>
+  <div>
+    <h1 class="h4 fw-bold mb-0">{{ provider.user.profile.full_name }}</h1>
+    <div class="text-muted">{{ provider.user.profile.city }}, {{ provider.user.profile.district }}</div>
+  </div>
+  {% if user.is_authenticated and not user.is_provider and not user.is_admin %}
+    <div class="ms-auto">
+      <a class="btn btn-primary" href="{% url 'chat:start_provider_chat' provider.pk %}">Chat boshlash</a>
+    </div>
+  {% endif %}
+</div>
+<h2 class="h5 fw-bold">Tasdiqlangan e’lonlar</h2>
+<div class="row g-3">
+  {% for listing in listings %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ listing.title }}</h5>
+          <p class="text-muted small">{{ listing.city }}, {{ listing.district }}</p>
+          <a class="btn btn-outline-primary btn-sm" href="{% url 'listings:detail' listing.pk %}">Batafsil</a>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">E’lonlar topilmadi.</p>
+  {% endfor %}
+</div>
+{% endblock %}

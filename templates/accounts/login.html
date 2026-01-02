@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Kirish - Ustatop{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-5">
+    <div class="auth-header text-center mb-4">
+      <h1 class="h4 fw-bold mb-1">Kirish</h1>
+      <p class="text-muted mb-0">Hisobingizga kirib xizmatlarni boshqaring.</p>
+    </div>
+    <form method="post" class="auth-card card p-4 p-lg-5">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+        {{ form.username }}
+        {% if form.username.errors %}<div class="invalid-feedback d-block">{{ form.username.errors|striptags }}</div>{% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% if form.password.errors %}<div class="invalid-feedback d-block">{{ form.password.errors|striptags }}</div>{% endif %}
+      </div>
+      <button class="btn btn-primary w-100 mt-2" type="submit">Kirish</button>
+      <div class="text-center small text-muted mt-3">
+        Hisob yo‘qmi? <a href="{% url 'accounts:register' %}">Ro‘yxatdan o‘tish</a>
+      </div>
+      <div class="text-center small text-muted mt-2">
+        Parol esdan chiqdimi? <a href="{% url 'accounts:password_reset' %}">Tiklash</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

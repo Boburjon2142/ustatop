@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}{{ category.name }} - Ustatop{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h4 fw-bold">{{ category.name }}</h1>
+  <a class="text-decoration-none" href="{% url 'listings:public_list' %}">Barcha e’lonlar</a>
+</div>
+<div class="row g-3">
+  {% for service in category.services.all %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">{{ service.name }}</h5>
+          <p class="card-text text-muted">{{ service.description }}</p>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-muted">Xizmatlar topilmadi.</p>
+  {% endfor %}
+</div>
+{% endblock %}

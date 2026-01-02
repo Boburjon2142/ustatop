@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block title %}E’lonlar - Ustatop{% endblock %}
+{% block content %}
+<div class="results-header mb-4">
+  <div>
+    <h1 class="h4 fw-bold mb-1">Eng mos ustalardan narx oling</h1>
+    <div class="text-muted small">Tanlangan xizmat bo‘yicha mos ustalar ro‘yxati.</div>
+  </div>
+  <form class="d-flex gap-2" method="get">
+    <input class="form-control" name="q" value="{{ query }}" placeholder="Qidiruv...">
+    <input type="hidden" name="service_id" value="{{ service_id }}" data-service-id>
+    {% for detail_id in selected_details %}
+      <input type="hidden" name="detail" value="{{ detail_id }}">
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">Qidirish</button>
+  </form>
+</div>
+
+<div class="top-matches mb-4">
+  <h6 class="fw-semibold mb-3">Eng yaxshi 3 mos usta</h6>
+  <div class="row g-3">
+    {% for listing in listings|slice:":3" %}
+      <div class="col-md-4">
+        <div class="card top-match-card h-100">
+          <div class="card-body">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <div class="avatar-circle">{{ listing.provider.user.username|slice:":1" }}</div>
+              <div>
+                <div class="fw-semibold">{{ listing.provider.user.profile.full_name }}</div>
+                <div class="text-muted small">{{ listing.provider.rating }} reyting</div>
+              </div>
+            </div>
+            <div class="fw-semibold">{{ listing.title }}</div>
+            <div class="text-muted small">{{ listing.city }}</div>
+          </div>
+          <div class="card-footer bg-white">
+            <a class="btn btn-outline-primary btn-sm w-100" href="{% url 'listings:detail' listing.pk %}">Batafsil</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">Hozircha top mosliklar yo‘q.</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-3">
+    <div class="card filter-card">
+      <div class="card-body">
+        <h6 class="fw-semibold mb-3">Filtrlar</h6>
+        <div class="text-muted small mb-3">Xizmat bo‘yicha savollarga javob bering.</div>
+        <form method="get" class="service-filter" data-require-service="true">
+          <input
+            class="form-control mb-2"
+            name="q"
+            value="{{ query }}"
+            placeholder="Xizmatni qidiring"
+            autocomplete="off"
+            data-autocomplete="{% url 'services:service_suggestions' %}">
+          <div class="autocomplete-menu d-none"></div>
+          <input type="hidden" name="service_id" value="{{ service_id }}" data-service-id>
+          {% for detail_id in selected_details %}
+            <input type="hidden" name="detail" value="{{ detail_id }}">
+          {% endfor %}
+          <button class="btn btn-outline-primary w-100 mb-3" type="submit">Qidirish</button>
+        </form>
+        {% if service_detail_groups %}
+          <form method="get" class="filter-answers">
+            <input type="hidden" name="q" value="{{ query }}">
+            <input type="hidden" name="service_id" value="{{ service_id }}">
+            {% for group in service_detail_groups %}
+              <div class="filter-group">
+                <div class="filter-group-title">{{ group.question }}</div>
+                <div class="d-grid gap-2">
+                  {% for option in group.options %}
+                    <label class="filter-item">
+                      <input type="checkbox" name="detail" value="{{ option.id }}" {% if option.id|stringformat:"s" in selected_details %}checked{% endif %}>
+                      <span>{{ option.name }}</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+            <button class="btn btn-primary w-100 mt-3" type="submit">Filtrni qo‘llash</button>
+          </form>
+        {% else %}
+          <button class="btn btn-outline-primary w-100 mb-3" type="button" data-bs-toggle="modal" data-bs-target="#filterModal" {% if not service_id %}disabled{% endif %}>Savollarga javob berish</button>
+        {% endif %}
+        <div class="small text-muted">Tavsiya: eng mos ustalar yuqorida chiqadi.</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-9">
+    <div class="results-list">
+      {% for listing in listings %}
+        <div class="result-card">
+          <div class="result-avatar">
+            {{ listing.provider.user.username|slice:":1" }}
+          </div>
+          <div class="result-body">
+            <div class="result-title">{{ listing.provider.user.profile.full_name }}</div>
+            <div class="result-sub text-muted">{{ listing.title }}</div>
+            <div class="result-meta">
+              <span>{{ listing.city }}</span>
+              {% if listing.provider.rating %}
+                <span class="dot">•</span>
+                <span>{{ listing.provider.rating }} reyting</span>
+              {% endif %}
+              {% if listing.price_from %}
+                <span class="dot">•</span>
+                <span>{{ listing.price_from }} so‘m dan</span>
+              {% endif %}
+            </div>
+            <div class="result-desc">{{ listing.description|truncatechars:180 }}</div>
+          </div>
+          <div class="result-actions">
+            <a class="btn btn-outline-primary btn-sm mb-2" href="{% url 'providers:provider_detail' listing.provider.pk %}">Profilga o‘tish</a>
+            <a class="btn btn-primary btn-sm" href="{% url 'listings:detail' listing.pk %}">Batafsil</a>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-muted">Hozircha e’lonlar yo‘q.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% if service_id %}
+  <div class="modal fade" id="filterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Xizmat bo‘yicha savollar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form method="get" class="filter-form" id="filter-form">
+            <input type="hidden" name="q" value="{{ query }}">
+            <input type="hidden" name="service_id" value="{{ service_id }}">
+            <div
+              id="filter-steps"
+              class="stepper"
+              data-endpoint="{% url 'services:service_details' %}"
+              data-service="{{ service_id }}"
+              data-selected="{{ selected_details|join:',' }}"
+              data-mode="filter"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Yopish</button>
+          <button class="btn btn-primary js-search-submit" type="submit" form="filter-form">Filtrni qo‘llash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

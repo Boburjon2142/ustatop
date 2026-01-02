@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ listing.title }} - Ustatop{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-7">
+    <h1 class="h4 fw-bold">{{ listing.title }}</h1>
+    <p class="text-muted">{{ listing.city }}, {{ listing.district }}</p>
+    <p class="text-justify">{{ listing.description }}</p>
+    {% if listing.price_from %}
+      <p class="fw-semibold">Narx: {{ listing.price_from }} so‘m dan</p>
+    {% endif %}
+    {% if listing.images.count %}
+      <div class="row g-2">
+        {% for image in listing.images.all %}
+          <div class="col-4">
+            <img class="img-fluid rounded-3" src="{{ image.image.url }}" alt="">
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+  <div class="col-lg-5">
+    <div class="card">
+      <div class="card-body">
+        <div class="d-flex align-items-center gap-2">
+          <div class="avatar-circle">{{ listing.provider.user.username|slice:":1" }}</div>
+          <div>
+            <div class="fw-semibold">{{ listing.provider.user.profile.full_name }}</div>
+            <div class="text-muted small">{{ listing.provider.rating }} reyting</div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <a class="btn btn-primary w-100" href="{% url 'providers:provider_detail' listing.provider.pk %}">Profilga o‘tish</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Kategoriyalar - Ustatop{% endblock %}
+{% block content %}
+<h1 class="h4 fw-bold mb-3">Kategoriyalar</h1>
+<div class="row g-3">
+  {% for category in categories %}
+    <div class="col-6 col-md-3">
+      <a class="card h-100 text-decoration-none card-hover" href="{% url 'services:category_detail' category.slug %}">
+        <div class="card-body">
+          <div class="fs-5 fw-bold">{{ category.name }}</div>
+          <div class="text-muted small">{{ category.services.count }} xizmat</div>
+        </div>
+      </a>
+    </div>
+  {% empty %}
+    <p class="text-muted">Hozircha kategoriyalar yo‘q.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}E’lon yaratish - Ustatop{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-9">
+    <div class="auth-header text-center mb-4">
+      <h1 class="h4 fw-bold mb-1">E’lon yaratish</h1>
+      <p class="text-muted mb-0">Ma’lumotlarni to‘liq kiriting, so‘ng tasdiq uchun yuborasiz.</p>
+    </div>
+    <form method="post" enctype="multipart/form-data" class="auth-card card p-4 p-lg-5" data-services-endpoint="{% url 'services:category_services' %}">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label" for="{{ form.category.id_for_label }}">{{ form.category.label }}</label>
+          {{ form.category }}
+          {% if form.category.errors %}<div class="invalid-feedback d-block">{{ form.category.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="{{ form.service.id_for_label }}">{{ form.service.label }}</label>
+          {{ form.service }}
+          {% if form.service.errors %}<div class="invalid-feedback d-block">{{ form.service.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="{{ form.title.id_for_label }}">{{ form.title.label }}</label>
+          {{ form.title }}
+          {% if form.title.errors %}<div class="invalid-feedback d-block">{{ form.title.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="col-12">
+          <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+          {{ form.description }}
+          {% if form.description.errors %}<div class="invalid-feedback d-block">{{ form.description.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+          {{ form.city }}
+          {% if form.city.errors %}<div class="invalid-feedback d-block">{{ form.city.errors|striptags }}</div>{% endif %}
+        </div>
+        <div class="col-md-6">
+          <label class="form-label" for="{{ form.price_from.id_for_label }}">{{ form.price_from.label }}</label>
+          {{ form.price_from }}
+          {% if form.price_from.errors %}<div class="invalid-feedback d-block">{{ form.price_from.errors|striptags }}</div>{% endif %}
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h6 class="fw-semibold">Xizmat savollari</h6>
+        <p class="text-muted small mb-2">Har bir bosqichda mos bandlarni belgilang.</p>
+        <div
+          id="service-details"
+          class="stepper"
+          data-endpoint="{% url 'services:service_details' %}"
+          data-selected="{{ form.service_details.value|join:',' }}"
+          data-mode="provider">
+          <div class="text-muted small">Xizmat tanlang — savollar chiqadi.</div>
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <h6 class="fw-semibold">Rasmlar (1-3)</h6>
+        <p class="text-muted small mb-2">Katta va aniq suratlar ustaning ishonchliligini oshiradi.</p>
+        {{ formset.management_form }}
+        <div class="row g-3">
+          {% for image_form in formset %}
+            <div class="col-md-4">
+              <div class="image-card">
+                {{ image_form.id }}
+                <div class="image-header">
+                  <label class="form-label mb-0">{{ image_form.image.label }}</label>
+                  {% if image_form.DELETE %}
+                    <label class="delete-toggle" title="O‘chirish">
+                      {{ image_form.DELETE }}
+                      <span class="delete-icon">x</span>
+                    </label>
+                  {% endif %}
+                </div>
+                <div class="image-input">
+                  {{ image_form.image }}
+                </div>
+                {% if image_form.image.errors %}
+                  <div class="invalid-feedback d-block">{{ image_form.image.errors|striptags }}</div>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <button class="btn btn-primary w-100 mt-4" type="submit">Saqlash</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
